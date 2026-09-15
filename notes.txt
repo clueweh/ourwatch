@@ -1,0 +1,21 @@
+# OurWatch — Commands Cheat Sheet
+
+
+#For running the system in chrome
+cd ourwatch
+flutter run -d chrome
+
+
+## To check what devices are available
+flutter devices
+
+## Fetch/update packages after changing pubspec.yaml
+flutter pub get
+
+## Check overall setup health
+flutter doctor
+
+## While the app is running:
+# - press "r" in the terminal for hot reload (fast, keeps app state)
+# - press "R" for hot restart (full reload)
+# - press "q" to quit

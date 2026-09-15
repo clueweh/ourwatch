@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../constants/app_colors.dart';
 
 class StatisticsScreen extends StatelessWidget {
@@ -14,7 +15,10 @@ class StatisticsScreen extends StatelessWidget {
           children: [
             Icon(Icons.hexagon_outlined, color: AppColors.primaryRed, size: 20),
             const SizedBox(width: 8),
-            const Text('OURWATCH', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            const Text(
+              'OURWATCH',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         actions: [
@@ -24,19 +28,34 @@ class StatisticsScreen extends StatelessWidget {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryRed,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
-              child: const Text('+ Report', style: TextStyle(color: Colors.white, fontSize: 12)),
+              child: const Text(
+                '+ Report',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
             ),
-          )
+          ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          Text('Statistics', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+          Text(
+            'Statistics',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text('Riverside District · August 2026', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text(
+            'Riverside District · August 2026',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          ),
           const SizedBox(height: 20),
           GridView.count(
             crossAxisCount: 2,
@@ -66,8 +85,22 @@ class StatisticsScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Resolution Rate', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 14)),
-                    Text('50%', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(
+                      'Resolution Rate',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      '50%',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -77,11 +110,19 @@ class StatisticsScreen extends StatelessWidget {
                     value: 0.5,
                     minHeight: 6,
                     backgroundColor: AppColors.inputBg,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryRed),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColors.primaryRed,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text('3 of 6 recent reports resolved', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                Text(
+                  '3 of 6 recent reports resolved',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ),
           ),
@@ -96,7 +137,14 @@ class StatisticsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Reports Per Month', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(
+                  'Reports Per Month',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
                 const SizedBox(height: 24),
                 SizedBox(
                   height: 160,
@@ -107,7 +155,10 @@ class StatisticsScreen extends StatelessWidget {
                       _buildBar(40, false),
                       _buildBar(30, false),
                       _buildBar(32, false),
-                      _buildBar(80, true), // Highlighted Jun bar with tooltip mockup
+                      _buildBar(
+                        80,
+                        true,
+                      ), // Highlighted Jun bar with tooltip mockup
                       _buildBar(70, true),
                       _buildBar(100, true),
                     ],
@@ -133,22 +184,44 @@ class StatisticsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(value, style: TextStyle(color: AppColors.textPrimary, fontSize: 22, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(title, style: TextStyle(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.w600)),
-          Text(subtitle, style: TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+          Text(
+            title,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            subtitle,
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 10),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBar(double heightFactor, bool isHighlighted) {
-    return Container(
-      width: 24,
-      height: heightFactor,
-      decoration: BoxDecoration(
-        color: isHighlighted ? AppColors.primaryRed : AppColors.primaryRed.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(4),
+  Widget _buildBar(double heightPercent, bool isHighlighted) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: 24,
+        height: 160 * (heightPercent / 100),
+        decoration: BoxDecoration(
+          color: isHighlighted
+              ? AppColors.primaryRed
+              : AppColors.primaryRed.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(4),
+        ),
       ),
     );
   }

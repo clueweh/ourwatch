@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../constants/app_colors.dart';
 
 class IncidentCard extends StatelessWidget {
@@ -42,7 +43,10 @@ class IncidentCard extends StatelessWidget {
             errorBuilder: (_, __, ___) => Container(
               height: 180,
               color: Colors.grey[800],
-              child: const Icon(Icons.image_not_supported, color: Colors.white54),
+              child: const Icon(
+                Icons.image_not_supported,
+                color: Colors.white54,
+              ),
             ),
           ),
           Padding(
@@ -76,11 +80,16 @@ class IncidentCard extends StatelessWidget {
                       ],
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryRed.withOpacity(0.15),
+                        color: AppColors.primaryRed.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: AppColors.primaryRed.withOpacity(0.5)),
+                        border: Border.all(
+                          color: AppColors.primaryRed.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Text(
                         status,
@@ -119,11 +128,17 @@ class IncidentCard extends StatelessWidget {
                   children: [
                     Text(
                       location,
-                      style: TextStyle(color: AppColors.textSecondary.withOpacity(0.7), fontSize: 12),
+                      style: TextStyle(
+                        color: AppColors.textSecondary.withValues(alpha: 0.7),
+                        fontSize: 12,
+                      ),
                     ),
                     Text(
                       timeAgo,
-                      style: TextStyle(color: AppColors.textSecondary.withOpacity(0.7), fontSize: 12),
+                      style: TextStyle(
+                        color: AppColors.textSecondary.withValues(alpha: 0.7),
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),

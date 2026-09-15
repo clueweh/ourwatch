@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../constants/app_colors.dart';
 import '../widgets/incident_card.dart';
 
@@ -22,10 +23,15 @@ class _FeedScreenState extends State<FeedScreen> {
     'Accident',
     'Suspicious Activity',
     'Medical',
-    'Vandalism'
+    'Vandalism',
   ];
 
-  final List<String> statuses = ['All Statuses', 'Active', 'Under Review', 'Resolved'];
+  final List<String> statuses = [
+    'All Statuses',
+    'Active',
+    'Under Review',
+    'Resolved',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +43,10 @@ class _FeedScreenState extends State<FeedScreen> {
           children: [
             Icon(Icons.hexagon_outlined, color: AppColors.primaryRed, size: 20),
             const SizedBox(width: 8),
-            Text('OURWATCH', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            Text(
+              'OURWATCH',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         actions: [
@@ -46,14 +55,22 @@ class _FeedScreenState extends State<FeedScreen> {
             child: ElevatedButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.add, size: 16, color: Colors.white),
-              label: const Text('+ Report', style: TextStyle(color: Colors.white, fontSize: 12)),
+              label: const Text(
+                '+ Report',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryRed,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
       body: ListView(
@@ -64,73 +81,135 @@ class _FeedScreenState extends State<FeedScreen> {
             children: [
               Text(
                 'Area Incident Feed',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
               ),
               Row(
                 children: [
-                  Container(width: 6, height: 6, decoration: const BoxDecoration(color: AppColors.primaryRed, shape: BoxShape.circle)),
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primaryRed,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                   const SizedBox(width: 4),
-                  Text('2 active', style: TextStyle(color: AppColors.primaryRed, fontSize: 12, fontWeight: FontWeight.bold)),
+                  Text(
+                    '2 active',
+                    style: TextStyle(
+                      color: AppColors.primaryRed,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 4),
-          Text('Riverside District · 6 reports', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          Text(
+            'Riverside District · 6 reports',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          ),
           const SizedBox(height: 16),
           TextField(
             decoration: InputDecoration(
               hintText: 'Search reports...',
-              hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5)),
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary.withValues(alpha: 0.5),
+              ),
               filled: true,
               fillColor: AppColors.cardBg,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppColors.borderDark)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppColors.borderDark)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppColors.borderDark),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: AppColors.borderDark),
+              ),
             ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: selectedType,
+            initialValue: selectedType,
             dropdownColor: AppColors.cardBg,
             decoration: _dropdownDecoration(),
-            items: types.map((t) => DropdownMenuItem(value: t, child: Text(t, style: const TextStyle(color: Colors.white)))).toList(),
+            items: types
+                .map(
+                  (t) => DropdownMenuItem(
+                    value: t,
+                    child: Text(t, style: const TextStyle(color: Colors.white)),
+                  ),
+                )
+                .toList(),
             onChanged: (val) => setState(() => selectedType = val!),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: selectedStatus,
+            initialValue: selectedStatus,
             dropdownColor: AppColors.cardBg,
             decoration: _dropdownDecoration(),
-            items: statuses.map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(color: Colors.white)))).toList(),
+            items: statuses
+                .map(
+                  (s) => DropdownMenuItem(
+                    value: s,
+                    child: Text(s, style: const TextStyle(color: Colors.white)),
+                  ),
+                )
+                .toList(),
             onChanged: (val) => setState(() => selectedStatus = val!),
           ),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primaryRed.withOpacity(0.1),
+              color: AppColors.primaryRed.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.primaryRed.withOpacity(0.4)),
+              border: Border.all(
+                color: AppColors.primaryRed.withValues(alpha: 0.4),
+              ),
             ),
             child: Row(
               children: [
-                Container(width: 6, height: 6, decoration: const BoxDecoration(color: AppColors.primaryRed, shape: BoxShape.circle)),
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryRed,
+                    shape: BoxShape.circle,
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: RichText(
                     text: TextSpan(
                       text: '2 active incidents ',
-                      style: TextStyle(color: AppColors.primaryRed, fontWeight: FontWeight.bold, fontSize: 13),
+                      style: TextStyle(
+                        color: AppColors.primaryRed,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
                       children: [
                         TextSpan(
                           text: 'in your area — stay vigilant',
-                          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.normal),
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                Text('Use sidebar to report', style: TextStyle(color: AppColors.primaryRed, fontSize: 11)),
+                Text(
+                  'Use sidebar to report',
+                  style: TextStyle(color: AppColors.primaryRed, fontSize: 11),
+                ),
               ],
             ),
           ),
@@ -154,9 +233,18 @@ class _FeedScreenState extends State<FeedScreen> {
       filled: true,
       fillColor: AppColors.cardBg,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppColors.borderDark)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppColors.borderDark)),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: AppColors.primaryRed)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColors.borderDark),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: AppColors.borderDark),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.primaryRed),
+      ),
     );
   }
 }

@@ -1,35 +1,92 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../services/auth_service.dart';
+import 'register_screen.dart';
 import 'main_navigation_screen.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSignIn() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    // 1. Check if inputs are empty
+    if (email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'Please enter both email and password.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    // 2. Validate against AuthService (Firebase)
+    final error = await AuthService().signInUser(
+      email: email,
+      password: password,
+    );
+
+    setState(() => _isLoading = false);
+
+    // 3. Block access if authentication failed
+    if (error != null) {
+      setState(() => _errorMessage = error);
+      return;
+    }
+
+    // 4. Success: allow entry
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 60),
               Row(
                 children: [
-                  Icon(Icons.hexagon_outlined, color: AppColors.primaryRed, size: 24),
+                  Icon(Icons.hexagon_outlined, color: AppColors.primaryRed, size: 28),
                   const SizedBox(width: 8),
                   Text(
                     'OURWATCH',
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
+                      fontSize: 18,
                       letterSpacing: 1.2,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 48),
               Text(
                 'Sign in',
                 style: TextStyle(
@@ -38,106 +95,85 @@ class SignInScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                'Access your safety dashboard',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-              ),
               const SizedBox(height: 32),
-              _buildLabel('EMAIL'),
+
+              Text('EMAIL', style: TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 1)),
               const SizedBox(height: 8),
               TextField(
-                decoration: _inputDecoration('jordan@example.com'),
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
                 style: const TextStyle(color: Colors.white),
+                decoration: _inputDecoration('jordan@example.com'),
               ),
               const SizedBox(height: 20),
-              _buildLabel('PASSWORD'),
+
+              Text('PASSWORD', style: TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 1)),
               const SizedBox(height: 8),
               TextField(
+                controller: _passwordController,
                 obscureText: true,
-                decoration: _inputDecoration('••••••••'),
                 style: const TextStyle(color: Colors.white),
+                decoration: _inputDecoration('••••••••'),
               ),
+
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Text(_errorMessage!, style: TextStyle(color: AppColors.primaryRed, fontSize: 13)),
+              ],
+
               const SizedBox(height: 28),
+
+              
+
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryRed,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MainNavigationScreen(),
-                      ),
+                  // CRITICAL: Ensure this points ONLY to _handleSignIn
+                  onPressed: _isLoading ? null : _handleSignIn,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Sign in',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
                     );
                   },
-                  child: const Text(
-                    'Sign in',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    text: 'New to OurWatch? ',
-                    style: TextStyle(color: AppColors.textSecondary),
-                    children: [
-                      TextSpan(
-                        text: 'Create account',
-                        style: TextStyle(
-                          color: AppColors.primaryRed,
-                          fontWeight: FontWeight.bold,
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Don't have an account? ",
+                      style: TextStyle(color: AppColors.textSecondary),
+                      children: [
+                        TextSpan(
+                          text: 'Register',
+                          style: TextStyle(
+                            color: AppColors.primaryRed,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-              const Spacer(),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBg,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.borderDark),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Demo credentials',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'jordan@example.com / password\npriya@responder.gov / password',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 13,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -145,37 +181,16 @@ class SignInScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLabel(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: AppColors.textSecondary,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 1,
-      ),
-    );
-  }
-
   InputDecoration _inputDecoration(String hint) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5)),
+      hintStyle: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.5)),
       filled: true,
       fillColor: AppColors.inputBg,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.borderDark),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.borderDark),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.primaryRed),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppColors.borderDark)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppColors.borderDark)),
+      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: AppColors.primaryRed)),
     );
   }
 }
