@@ -1,3 +1,4 @@
+import 'submit_location_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
@@ -11,6 +12,8 @@ class SubmitIncidentScreen extends StatefulWidget {
 
 class _SubmitIncidentScreenState extends State<SubmitIncidentScreen> {
   String? selectedType;
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +83,7 @@ class _SubmitIncidentScreenState extends State<SubmitIncidentScreen> {
             _buildLabel('INCIDENT TITLE'),
             const SizedBox(height: 8),
             TextField(
+              controller: titleController,
               decoration: _inputDecoration('e.g. Vehicle fire on Oak Street'),
               style: const TextStyle(color: Colors.white),
             ),
@@ -113,6 +117,7 @@ class _SubmitIncidentScreenState extends State<SubmitIncidentScreen> {
             _buildLabel('DESCRIPTION'),
             const SizedBox(height: 8),
             TextField(
+              controller: descriptionController,
               maxLines: 5,
               decoration: _inputDecoration(
                 'Describe what is happening, who is involved, and any immediate danger...',
@@ -133,7 +138,26 @@ class _SubmitIncidentScreenState extends State<SubmitIncidentScreen> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (titleController.text.isEmpty || selectedType == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please fill in all fields'),
+                      ),
+                    );
+                    return;
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubmitLocationScreen(
+                        title: titleController.text,
+                        type: selectedType!,
+                        description: descriptionController.text,
+                      ),
+                    ),
+                  );
+                },
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

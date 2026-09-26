@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "68148678191",
+    "project_id": "ourwatch-4f73f",
+    "storage_bucket": "ourwatch-4f73f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68148678191:android:c2753c924f52499e6e40da",
+        "android_client_info": {
+          "package_name": "com.example.ourwatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7eIxvbhp3t904sclDXeEVHuktRvldm3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

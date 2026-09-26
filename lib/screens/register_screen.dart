@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../services/auth_service.dart';
 
-enum UserRole { resident, responder }
-
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -18,6 +16,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _barangayCodeController = TextEditingController();
+  final _codeController = TextEditingController();
   String? _error;
   bool _isLoading = false;
 
@@ -28,17 +28,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _codeController.dispose();
+    _barangayCodeController.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final code = _codeController.text.trim();
+    final barangayCode = _barangayCodeController.text.trim();
 
-    if (_nameController.text.trim().isEmpty ||
+    if (name.isEmpty ||
         email.isEmpty ||
-        password.isEmpty) {
-      setState(() => _error = 'Fill in your name, email, and password.');
+        password.isEmpty ||
+        code.isEmpty ||
+        barangayCode.isEmpty) {
+      setState(() => _error =
+          'Fill in your name, email, password, barangay code, and registration code.');
       return;
     }
     if (password != _confirmPasswordController.text) {
@@ -56,8 +64,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     final errorMessage = await AuthService().registerUser(
+      name: name,
       email: email,
       password: password,
+      barangayCode: barangayCode,
+      registrationCode: code,
     );
 
     setState(() => _isLoading = false);
@@ -150,6 +161,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller: _confirmPasswordController,
                 obscureText: true,
                 decoration: _inputDecoration('Re-enter your password'),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              _buildLabel('BARANGAY CODE'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _barangayCodeController,
+                decoration: _inputDecoration('Provided by your barangay'),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              _buildLabel('REGISTRATION CODE'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _codeController,
+                decoration: _inputDecoration('Resident or responder code'),
                 style: const TextStyle(color: Colors.white),
               ),
               if (_error != null) ...[

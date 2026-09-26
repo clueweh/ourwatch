@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
@@ -9,7 +11,8 @@ class IncidentCard extends StatelessWidget {
   final String location;
   final String timeAgo;
   final String status;
-  final String imageUrl;
+  final String? imageUrl;
+  final Uint8List? imageBytes;
 
   const IncidentCard({
     super.key,
@@ -19,7 +22,8 @@ class IncidentCard extends StatelessWidget {
     required this.location,
     required this.timeAgo,
     required this.status,
-    required this.imageUrl,
+    this.imageUrl,
+    this.imageBytes,
   });
 
   @override
@@ -35,20 +39,7 @@ class IncidentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            imageUrl,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              height: 180,
-              color: Colors.grey[800],
-              child: const Icon(
-                Icons.image_not_supported,
-                color: Colors.white54,
-              ),
-            ),
-          ),
+          _buildImage(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -146,6 +137,43 @@ class IncidentCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildImage() {
+    // Prefer base64 bytes (our current storage approach); fall back to a
+    // network URL if one was ever provided; otherwise show a placeholder.
+    if (imageBytes != null) {
+      return Image.memory(
+        imageBytes!,
+        height: 180,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _placeholder(),
+      );
+    }
+
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return Image.network(
+        imageUrl!,
+        height: 180,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _placeholder(),
+      );
+    }
+
+    return _placeholder();
+  }
+
+  Widget _placeholder() {
+    return Container(
+      height: 180,
+      color: Colors.grey[800],
+      child: const Icon(
+        Icons.image_not_supported,
+        color: Colors.white54,
       ),
     );
   }
