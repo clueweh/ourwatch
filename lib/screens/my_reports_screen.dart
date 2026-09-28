@@ -109,7 +109,7 @@ class MyReportsScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Use sidebar to report',
+                          'Use the Report tab to submit',
                           style: TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 12,
