@@ -1,4 +1,5 @@
 import 'submit_location_screen.dart';
+
 import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
@@ -25,12 +26,6 @@ class _SubmitIncidentScreenState extends State<SubmitIncidentScreen> {
           'Submit Incident',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: AppColors.textSecondary),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

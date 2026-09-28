@@ -118,12 +118,6 @@ class _SubmitMediaScreenState extends State<SubmitMediaScreen> {
           'Submit Incident',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: AppColors.textSecondary),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
