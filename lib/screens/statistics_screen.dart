@@ -140,22 +140,6 @@ class StatisticsScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryRed,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              child: const Text(
-                '+ Report',
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
-          ),
           IconButton(
             icon: const Icon(Icons.logout, color: AppColors.textSecondary),
             tooltip: 'Sign out',

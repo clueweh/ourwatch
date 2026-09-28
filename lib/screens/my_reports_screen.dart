@@ -25,24 +25,13 @@ class MyReportsScreen extends StatelessWidget {
           children: [
             Icon(Icons.hexagon_outlined, color: AppColors.primaryRed, size: 20),
             const SizedBox(width: 8),
-            const Text('OURWATCH',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            const Text(
+              'OURWATCH',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryRed,
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-              ),
-              child:
-                  const Text('+ Report', style: TextStyle(color: Colors.white, fontSize: 12)),
-            ),
-          ),
           IconButton(
             icon: const Icon(Icons.logout, color: AppColors.textSecondary),
             tooltip: 'Sign out',
@@ -111,20 +100,31 @@ class MyReportsScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('My Reports',
-                            style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary)),
-                        Text('Use sidebar to report',
-                            style: TextStyle(
-                                color: AppColors.textSecondary, fontSize: 12)),
+                        Text(
+                          'My Reports',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          'Use sidebar to report',
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text('Reports you have submitted',
-                        style: TextStyle(
-                            color: AppColors.textSecondary, fontSize: 13)),
+                    Text(
+                      'Reports you have submitted',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
@@ -142,8 +142,7 @@ class MyReportsScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "You haven't submitted any reports yet.",
-                            style:
-                                TextStyle(color: AppColors.textSecondary),
+                            style: TextStyle(color: AppColors.textSecondary),
                           ),
                         ),
                       )
@@ -157,7 +156,9 @@ class MyReportsScreen extends StatelessWidget {
   }
 
   Widget _buildCard(
-      BuildContext context, QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    BuildContext context,
+    QueryDocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data();
 
     final String title = data['title'] ?? 'Untitled';
@@ -182,8 +183,9 @@ class MyReportsScreen extends StatelessWidget {
         ? '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}'
         : 'Location unavailable';
 
-    final String timeAgo =
-        timestamp != null ? _formatTimeAgo(timestamp.toDate()) : '';
+    final String timeAgo = timestamp != null
+        ? _formatTimeAgo(timestamp.toDate())
+        : '';
 
     return GestureDetector(
       onTap: () {
@@ -223,15 +225,19 @@ class MyReportsScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(count,
-                style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
+            Text(
+              count,
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(label,
-                style:
-                    TextStyle(color: AppColors.textSecondary, fontSize: 11)),
+            Text(
+              label,
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+            ),
           ],
         ),
       ),
