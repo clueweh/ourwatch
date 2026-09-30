@@ -1,6 +1,7 @@
 import 'submit_media_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../constants/app_colors.dart';
@@ -22,54 +23,80 @@ class SubmitLocationScreen extends StatefulWidget {
 }
 
 class _SubmitLocationScreenState extends State<SubmitLocationScreen> {
-  Position? currentPosition;
+  final _formKey = GlobalKey<FormState>();
+  final _barangayController = TextEditingController();
+  final _locationController = TextEditingController();
   bool isLoading = false;
   String? errorMessage;
 
-  Future<void> _getCurrentLocation() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
+  @override
+  void dispose() {
+    _barangayController.dispose();
+    _locationController.dispose();
+    super.dispose();
+  }
 
+  Future<void> _getCurrentLocation() async {
     try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      setState(() {
+        isLoading = true;
+        errorMessage = null;
+      });
+
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        setState(() {
-          errorMessage = 'Location services are disabled.';
-          isLoading = false;
-        });
-        return;
+        throw Exception('Location services are disabled.');
       }
 
-      LocationPermission permission = await Geolocator.checkPermission();
+      var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          setState(() {
-            errorMessage = 'Location permission denied.';
-            isLoading = false;
-          });
-          return;
+          throw Exception('Location permission denied.');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          errorMessage = 'Location permissions are permanently denied.';
-          isLoading = false;
-        });
-        return;
+        throw Exception('Location permissions are permanently denied.');
       }
 
-      Position position = await Geolocator.getCurrentPosition();
+      final position = await Geolocator.getCurrentPosition();
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      if (placemarks.isEmpty) {
+        throw Exception('No address was found for this location.');
+      }
+
+      final placemark = placemarks.first;
+      final address =
+          <String?>[
+                placemark.street,
+                placemark.subLocality,
+                placemark.locality,
+                placemark.subAdministrativeArea,
+                placemark.administrativeArea,
+                placemark.postalCode,
+                placemark.country,
+              ]
+              .whereType<String>()
+              .map((part) => part.trim())
+              .where((part) => part.isNotEmpty)
+              .join(', ');
+      if (address.isEmpty) {
+        throw Exception('No address was found for this location.');
+      }
+
       setState(() {
-        currentPosition = position;
+        _locationController.text = address;
         isLoading = false;
       });
     } catch (e) {
+      // ignore: avoid_print
+      print('Failed to get GPS location: $e');
       setState(() {
-        errorMessage = 'Error getting location: $e';
+        errorMessage = "Couldn't get your GPS location. Please type the location manually, or try this on the Android app.";
         isLoading = false;
       });
     }
@@ -144,60 +171,68 @@ class _SubmitLocationScreenState extends State<SubmitLocationScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            if (currentPosition == null && !isLoading)
-              ElevatedButton.icon(
-                onPressed: _getCurrentLocation,
-                icon: const Icon(Icons.my_location, color: Colors.white),
-                label: const Text('Capture Current Location'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryRed,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  minimumSize: const Size(double.infinity, 0),
-                ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _barangayController,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: const InputDecoration(
+                      labelText: 'Community / Barangay',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Please enter your community or barangay.'
+                        : null,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _locationController,
+                          textCapitalization: TextCapitalization.sentences,
+                          minLines: 1,
+                          maxLines: 3,
+                          decoration: const InputDecoration(
+                            labelText: 'Location',
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) =>
+                              value == null || value.trim().isEmpty
+                              ? 'Please enter a location.'
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        height: 56,
+                        child: OutlinedButton.icon(
+                          onPressed: isLoading ? null : _getCurrentLocation,
+                          icon: const Icon(Icons.my_location, size: 18),
+                          label: const Text('Use GPS'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (isLoading)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 12),
+                      child: LinearProgressIndicator(
+                        color: AppColors.primaryRed,
+                      ),
+                    ),
+                ],
               ),
-            if (isLoading)
-              const Center(
-                child: CircularProgressIndicator(color: AppColors.primaryRed),
-              ),
+            ),
             if (errorMessage != null)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: Text(
                   errorMessage!,
                   style: const TextStyle(color: Colors.redAccent),
-                ),
-              ),
-            if (currentPosition != null)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.inputBg,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.borderDark),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.check_circle, color: Colors.green, size: 18),
-                        SizedBox(width: 6),
-                        Text(
-                          'Location captured',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Lat: ${currentPosition!.latitude.toStringAsFixed(6)}',
-                      style: const TextStyle(color: Colors.white70),
-                    ),
-                    Text(
-                      'Lng: ${currentPosition!.longitude.toStringAsFixed(6)}',
-                      style: const TextStyle(color: Colors.white70),
-                    ),
-                  ],
                 ),
               ),
             const Spacer(),
@@ -214,22 +249,22 @@ class _SubmitLocationScreenState extends State<SubmitLocationScreen> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                onPressed: currentPosition == null
-                    ? null
-                    : () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SubmitMediaScreen(
-                              title: widget.title,
-                              type: widget.type,
-                              description: widget.description,
-                              latitude: currentPosition!.latitude,
-                              longitude: currentPosition!.longitude,
-                            ),
-                          ),
-                        );
-                      },
+                onPressed: () {
+                  if (!_formKey.currentState!.validate()) return;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubmitMediaScreen(
+                        title: widget.title,
+                        type: widget.type,
+                        description: widget.description,
+                        barangayText: _barangayController.text.trim(),
+                        locationText: _locationController.text.trim(),
+                      ),
+                    ),
+                  );
+                },
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

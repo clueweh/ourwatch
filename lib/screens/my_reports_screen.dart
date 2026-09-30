@@ -166,8 +166,7 @@ class MyReportsScreen extends StatelessWidget {
     final String description = data['description'] ?? '';
     final String status = data['status'] ?? 'Active';
     final String? imageBase64 = data['imageBase64'];
-    final double? lat = (data['latitude'] as num?)?.toDouble();
-    final double? lng = (data['longitude'] as num?)?.toDouble();
+    final String? locationText = data['locationText'] as String?;
     final Timestamp? timestamp = data['timestamp'];
 
     Uint8List? imageBytes;
@@ -179,9 +178,9 @@ class MyReportsScreen extends StatelessWidget {
       }
     }
 
-    final String location = (lat != null && lng != null)
-        ? '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}'
-        : 'Location unavailable';
+    final String location = locationText == null || locationText.trim().isEmpty
+        ? 'Location unavailable'
+        : locationText;
 
     final String timeAgo = timestamp != null
         ? _formatTimeAgo(timestamp.toDate())

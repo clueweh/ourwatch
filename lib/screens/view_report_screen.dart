@@ -49,9 +49,9 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
           .update({'status': newStatus});
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update status: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to update status: $e')));
       }
     } finally {
       if (mounted) setState(() => _isUpdatingStatus = false);
@@ -103,6 +103,10 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
           final String title = data['title'] ?? 'Untitled';
           final String type = data['type'] ?? 'Unknown';
           final String description = data['description'] ?? '';
+          final barangayValue = data['barangayId']?.toString().trim() ?? '';
+          final locationValue = data['locationText']?.toString().trim() ?? '';
+          final String barangay = barangayValue.isEmpty ? '—' : barangayValue;
+          final String location = locationValue.isEmpty ? '—' : locationValue;
           final String? imageBase64 = data['imageBase64'];
           final String? userId = data['userId'];
           final Timestamp? timestamp = data['timestamp'];
@@ -234,10 +238,12 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
                                   color: AppColors.primaryRed,
                                 ),
                                 items: kReportStatuses
-                                    .map((s) => DropdownMenuItem(
-                                          value: s,
-                                          child: Text(s),
-                                        ))
+                                    .map(
+                                      (s) => DropdownMenuItem(
+                                        value: s,
+                                        child: Text(s),
+                                      ),
+                                    )
                                     .toList(),
                                 onChanged: (newStatus) {
                                   if (newStatus != null &&
@@ -275,6 +281,10 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
                   ),
                 ),
 
+                const SizedBox(height: 16),
+                _metaRow(Icons.location_city_outlined, 'Barangay: $barangay'),
+                _metaRow(Icons.place_outlined, 'Location: $location'),
+
                 const SizedBox(height: 24),
                 Divider(color: AppColors.borderDark),
                 const SizedBox(height: 12),
@@ -283,8 +293,6 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
                 if (timestamp != null)
                   _metaRow(Icons.access_time, _formatTimestamp(timestamp)),
                 if (userId != null) _metaRow(Icons.person_outline, userId),
-                // Location intentionally omitted for now — add lat/lng or a
-                // map preview here later.
               ],
             ),
           );
@@ -306,13 +314,13 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.image_not_supported_outlined,
-                color: Colors.white38, size: 32),
-            SizedBox(height: 8),
-            Text(
-              'No photo attached',
-              style: TextStyle(color: Colors.white38),
+            Icon(
+              Icons.image_not_supported_outlined,
+              color: Colors.white38,
+              size: 32,
             ),
+            SizedBox(height: 8),
+            Text('No photo attached', style: TextStyle(color: Colors.white38)),
           ],
         ),
       ),

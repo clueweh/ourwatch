@@ -7,22 +7,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../constants/app_colors.dart';
-import '../services/auth_service.dart';
 
 class SubmitMediaScreen extends StatefulWidget {
   final String title;
   final String type;
   final String description;
-  final double latitude;
-  final double longitude;
+  final String barangayText;
+  final String locationText;
 
   const SubmitMediaScreen({
     super.key,
     required this.title,
     required this.type,
     required this.description,
-    required this.latitude,
-    required this.longitude,
+    required this.barangayText,
+    required this.locationText,
   });
 
   @override
@@ -69,20 +68,15 @@ class _SubmitMediaScreenState extends State<SubmitMediaScreen> {
         imageBase64 = base64Encode(selectedImageBytes!);
       }
 
-      // Tag the report with the reporter's barangay so Feed/Statistics can
-      // eventually be scoped per-community.
-      final barangayId = await AuthService().getCurrentUserBarangayId();
-
       // Save report data to Firestore
       await FirebaseFirestore.instance.collection('incident_reports').add({
         'title': widget.title,
         'type': widget.type,
         'description': widget.description,
-        'latitude': widget.latitude,
-        'longitude': widget.longitude,
+        'locationText': widget.locationText,
         'imageBase64': imageBase64,
         'userId': FirebaseAuth.instance.currentUser?.uid,
-        'barangayId': barangayId,
+        'barangayId': widget.barangayText,
         'timestamp': FieldValue.serverTimestamp(),
         // Every new report starts "Active". Only a responder can change
         // this later (see ViewReportScreen) — residents, including the
