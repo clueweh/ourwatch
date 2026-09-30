@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import 'account_screen.dart';
 import 'feed_screen.dart';
 import 'my_reports_screen.dart';
 import 'statistics_screen.dart';
@@ -20,6 +21,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const MyReportsScreen(),
     const StatisticsScreen(),
     const SubmitIncidentScreen(),
+    const AccountScreen(),
   ];
 
   @override
@@ -54,6 +56,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle_outline_rounded),
             label: 'Report',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Account',
           ),
         ],
       ),
