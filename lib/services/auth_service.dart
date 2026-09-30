@@ -6,32 +6,21 @@ import '../constants/registration_codes.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Register user with Email & Password, gated by two codes:
-  // 1. barangayCode confirms which community the person belongs to.
-  // 2. registrationCode (resident/responder) determines their role within
-  //    that community.
-  // Both are checked BEFORE creating the Auth account, so an invalid code
-  // never leaves behind a broken account with no valid role/barangay.
+  // A blank registration code registers a resident; only the responder code
+  // grants responder permissions. Validate it before creating the Auth account.
   Future<String?> registerUser({
     required String name,
     required String email,
     required String password,
-    required String barangayCode,
-    required String registrationCode,
+    String? registrationCode,
   }) async {
-    final barangayName = BarangayCodes.resolve(barangayCode.trim());
-    if (barangayName == null) {
-      return 'Invalid barangay code. Check with your barangay for the correct code.';
-    }
-
-    final trimmedCode = registrationCode.trim();
     final String role;
-    if (trimmedCode == RegistrationCodes.responder) {
-      role = 'responder';
-    } else if (trimmedCode == RegistrationCodes.resident) {
+    if (registrationCode == null || registrationCode.isEmpty) {
       role = 'resident';
+    } else if (registrationCode == RegistrationCodes.responder) {
+      role = 'responder';
     } else {
-      return 'Invalid registration code. Check with your barangay for the correct code.';
+      return 'Invalid registration code.';
     }
 
     try {
@@ -46,8 +35,6 @@ class AuthService {
           'name': name.trim(),
           'email': email.trim(),
           'role': role,
-          'barangayId': barangayCode.trim(),
-          'barangayName': barangayName,
           'createdAt': FieldValue.serverTimestamp(),
         });
       }

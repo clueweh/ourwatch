@@ -16,7 +16,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _barangayCodeController = TextEditingController();
   final _codeController = TextEditingController();
   String? _error;
   bool _isLoading = false;
@@ -29,7 +28,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _codeController.dispose();
-    _barangayCodeController.dispose();
     super.dispose();
   }
 
@@ -38,15 +36,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final code = _codeController.text.trim();
-    final barangayCode = _barangayCodeController.text.trim();
 
-    if (name.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        code.isEmpty ||
-        barangayCode.isEmpty) {
-      setState(() => _error =
-          'Fill in your name, email, password, barangay code, and registration code.');
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Fill in your name, email, and password.');
       return;
     }
     if (password != _confirmPasswordController.text) {
@@ -67,7 +59,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       name: name,
       email: email,
       password: password,
-      barangayCode: barangayCode,
       registrationCode: code,
     );
 
@@ -164,19 +155,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 20),
-              _buildLabel('BARANGAY CODE'),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _barangayCodeController,
-                decoration: _inputDecoration('Provided by your barangay'),
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 20),
-              _buildLabel('REGISTRATION CODE'),
+              _buildLabel('REGISTRATION CODE (OPTIONAL)'),
               const SizedBox(height: 8),
               TextField(
                 controller: _codeController,
-                decoration: _inputDecoration('Resident or responder code'),
+                decoration: _inputDecoration('Leave blank to register as resident'),
                 style: const TextStyle(color: Colors.white),
               ),
               if (_error != null) ...[
