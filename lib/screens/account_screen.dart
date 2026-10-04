@@ -73,6 +73,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 }
 
                 final data = snapshot.data!.data()!;
+                final barangay = data['barangay']?.toString().trim();
                 final createdAt = data['createdAt'];
                 final DateTime? createdAtDate = createdAt is Timestamp
                     ? createdAt.toDate()
@@ -104,6 +105,13 @@ class _AccountScreenState extends State<AccountScreen> {
                           ),
                           const SizedBox(height: 18),
                           _AccountDetail(
+                            label: 'Barangay',
+                            value: barangay == null || barangay.isEmpty
+                                ? 'Not provided'
+                                : barangay,
+                          ),
+                          const SizedBox(height: 18),
+                          _AccountDetail(
                             label: 'Role',
                             value: data['role']?.toString() ?? 'Not provided',
                           ),
@@ -119,20 +127,26 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryRed,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 48,
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryRed,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: () => handleLogout(context),
+                              icon: const Icon(Icons.logout),
+                              label: const Text('Log out'),
+                            ),
                           ),
                         ),
-                        onPressed: () => handleLogout(context),
-                        icon: const Icon(Icons.logout),
-                        label: const Text('Log out'),
-                      ),
+                      ],
                     ),
                   ],
                 );
@@ -155,7 +169,7 @@ class _AccountDetail extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textSecondary,
             fontSize: 12,
           ),
@@ -163,7 +177,7 @@ class _AccountDetail extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontSize: 15,
             fontWeight: FontWeight.w600,

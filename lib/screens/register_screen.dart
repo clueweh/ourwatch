@@ -13,6 +13,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _barangayController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -27,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _barangayController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -62,6 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       name: name,
       email: email,
       password: password,
+      barangay: _barangayController.text.trim(),
       registrationCode: code,
     );
 
@@ -137,6 +140,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: _inputDecoration('jordan@example.com'),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              _buildLabel('BARANGAY'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _barangayController,
+                textCapitalization: TextCapitalization.words,
+                decoration: _inputDecoration('Enter your barangay'),
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 20),

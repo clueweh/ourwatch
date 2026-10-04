@@ -12,6 +12,7 @@ class AuthService {
     required String name,
     required String email,
     required String password,
+    required String barangay,
     String? registrationCode,
   }) async {
     final String role;
@@ -35,6 +36,7 @@ class AuthService {
           'name': name.trim(),
           'email': email.trim(),
           'role': role,
+          'barangay': barangay.trim(),
           'createdAt': FieldValue.serverTimestamp(),
         });
       }

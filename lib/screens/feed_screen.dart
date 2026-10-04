@@ -55,7 +55,21 @@ class _FeedScreenState extends State<FeedScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: AppColors.textSecondary),
+            icon: Icon(
+              AppColors.isDarkMode.value
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+              color: AppColors.textSecondary,
+            ),
+            tooltip: AppColors.isDarkMode.value
+                ? 'Switch to light mode'
+                : 'Switch to dark mode',
+            onPressed: () {
+              AppColors.isDarkMode.value = !AppColors.isDarkMode.value;
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.logout, color: AppColors.textSecondary),
             tooltip: 'Sign out',
             onPressed: () => handleLogout(context),
           ),

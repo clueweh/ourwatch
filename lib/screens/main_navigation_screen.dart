@@ -16,53 +16,59 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const FeedScreen(),
-    const MyReportsScreen(),
-    const StatisticsScreen(),
-    const SubmitIncidentScreen(),
-    const AccountScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.background,
-        selectedItemColor: AppColors.primaryRed,
-        unselectedItemColor: AppColors.textSecondary,
-        selectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-        unselectedLabelStyle: const TextStyle(fontSize: 11),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
-            label: 'Feed',
+    return ValueListenableBuilder<bool>(
+      valueListenable: AppColors.isDarkMode,
+      builder: (context, isDarkMode, _) {
+        return Scaffold(
+          body: IndexedStack(
+            index: _currentIndex,
+            children: [
+              FeedScreen(),
+              MyReportsScreen(),
+              StatisticsScreen(),
+              SubmitIncidentScreen(),
+              AccountScreen(),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.adjust),
-            label: 'My Reports',
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) => setState(() => _currentIndex = index),
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: AppColors.background,
+            selectedItemColor: AppColors.primaryRed,
+            unselectedItemColor: AppColors.textSecondary,
+            selectedLabelStyle: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedLabelStyle: const TextStyle(fontSize: 11),
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.grid_view_rounded),
+                label: 'Feed',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.adjust),
+                label: 'My Reports',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart_rounded),
+                label: 'Statistics',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add_circle_outline_rounded),
+                label: 'Report',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                label: 'Account',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart_rounded),
-            label: 'Statistics',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline_rounded),
-            label: 'Report',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Account',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
