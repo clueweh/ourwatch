@@ -193,7 +193,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _codeController,
-                decoration: _inputDecoration('Resident or responder code'),
+                obscureText: !_isRegistrationCodeVisible,
+                decoration: _inputDecoration(
+                  'Responder Only',
+                ).copyWith(
+                  suffixIcon: IconButton(
+                    tooltip: _isRegistrationCodeVisible
+                        ? 'Hide registration code'
+                        : 'Show registration code',
+                    icon: Icon(
+                      _isRegistrationCodeVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () {
+                      setState(() => _isRegistrationCodeVisible =
+                          !_isRegistrationCodeVisible);
+                    },
+                  ),
+                ),
                 style: const TextStyle(color: Colors.white),
               ),
               if (_error != null) ...[
