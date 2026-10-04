@@ -15,6 +15,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
   String? _errorMessage;
 
   @override
@@ -111,9 +112,20 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
                 style: const TextStyle(color: Colors.white),
-                decoration: _inputDecoration('••••••••'),
+                decoration: _inputDecoration('••••••••').copyWith(
+                  suffixIcon: IconButton(
+                    tooltip: _isPasswordVisible ? 'Hide password' : 'Show password',
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () {
+                      setState(() => _isPasswordVisible = !_isPasswordVisible);
+                    },
+                  ),
+                ),
               ),
 
               if (_errorMessage != null) ...[

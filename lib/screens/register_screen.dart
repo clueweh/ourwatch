@@ -19,6 +19,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _codeController = TextEditingController();
   String? _error;
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+  bool _isRegistrationCodeVisible = false;
 
   @override
   void dispose() {
@@ -141,8 +144,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
-                obscureText: true,
-                decoration: _inputDecoration('At least 6 characters'),
+                obscureText: !_isPasswordVisible,
+                decoration: _inputDecoration('At least 6 characters').copyWith(
+                  suffixIcon: IconButton(
+                    tooltip: _isPasswordVisible ? 'Hide password' : 'Show password',
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () {
+                      setState(() => _isPasswordVisible = !_isPasswordVisible);
+                    },
+                  ),
+                ),
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 20),
@@ -150,8 +166,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _confirmPasswordController,
-                obscureText: true,
-                decoration: _inputDecoration('Re-enter your password'),
+                obscureText: !_isConfirmPasswordVisible,
+                decoration: _inputDecoration(
+                  'Re-enter your password',
+                ).copyWith(
+                  suffixIcon: IconButton(
+                    tooltip: _isConfirmPasswordVisible
+                        ? 'Hide password'
+                        : 'Show password',
+                    icon: Icon(
+                      _isConfirmPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () {
+                      setState(() => _isConfirmPasswordVisible =
+                          !_isConfirmPasswordVisible);
+                    },
+                  ),
+                ),
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 20),
@@ -159,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _codeController,
-                decoration: _inputDecoration('Leave blank to register as resident'),
+                decoration: _inputDecoration('Resident or responder code'),
                 style: const TextStyle(color: Colors.white),
               ),
               if (_error != null) ...[
