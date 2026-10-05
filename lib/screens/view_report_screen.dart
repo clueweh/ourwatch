@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/app_colors.dart';
 import '../services/auth_service.dart';
@@ -58,6 +59,21 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
     }
   }
 
+  Future<void> _openDirections(String destination) async {
+    final uri = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1'
+      '&destination=${Uri.encodeComponent(destination)}'
+      '&travelmode=driving',
+    );
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication) &&
+        mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open directions.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +121,10 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
           final String description = data['description'] ?? '';
           final barangayValue = data['barangayId']?.toString().trim() ?? '';
           final locationValue = data['locationText']?.toString().trim() ?? '';
+          final destination = [
+            barangayValue,
+            locationValue,
+          ].where((value) => value.isNotEmpty).join(', ');
           final String barangay = barangayValue.isEmpty ? '—' : barangayValue;
           final String location = locationValue.isEmpty ? '—' : locationValue;
           final String? imageBase64 = data['imageBase64'];
@@ -284,6 +304,25 @@ class _ViewReportScreenState extends State<ViewReportScreen> {
                 const SizedBox(height: 16),
                 _metaRow(Icons.location_city_outlined, 'Barangay: $barangay'),
                 _metaRow(Icons.place_outlined, 'Location: $location'),
+                if (destination.isNotEmpty)
+                  FutureBuilder<String>(
+                    future: _roleFuture,
+                    builder: (context, roleSnapshot) {
+                      if (roleSnapshot.data != 'responder') {
+                        return const SizedBox.shrink();
+                      }
+
+                      return OutlinedButton.icon(
+                        onPressed: () => _openDirections(destination),
+                        icon: const Icon(Icons.directions),
+                        label: const Text('Get Directions'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: BorderSide(color: AppColors.borderDark),
+                        ),
+                      );
+                    },
+                  ),
 
                 const SizedBox(height: 24),
                 Divider(color: AppColors.borderDark),
